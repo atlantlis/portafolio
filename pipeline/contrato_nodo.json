@@ -1,0 +1,73 @@
+{
+  "$schema": "contrato_nodo v1.0",
+  "nodo": "Agente_Procesador_Academico",
+  "descripcion": "Contrato estricto: input -> procesamiento Spivak (3 fases) -> output estructurado. Sin texto libre redundante. El pipeline rechaza en el borde todo nodo que no cumpla este esquema.",
+  "input": {
+    "documento_fuente": "string · ruta relativa al vault del .md RAW (obligatorio)",
+    "instruccion": "string · qué procesar (opcional)",
+    "modo": "enum · fase_1 | fase_2 | fase_3 (fase mínima exigida)"
+  },
+  "output": {
+    "title": "string · <80 chars (obligatorio)",
+    "fase_1_intuicion": {
+      "concepto_central": "string · definición en <40 palabras",
+      "analogia": "string · analogía concreta (balanza, dominó…) — OBLIGATORIA en tipo=concepto",
+      "visualizacion": "string · imagen geométrica o mental (opcional)"
+    },
+    "fase_2_demostracion": {
+      "enunciado": "string · teorema/proposición",
+      "prueba_latex": "string · prueba formal en LaTeX estricto ($...$ y $$...$$) citando axiomas — OBLIGATORIA en tipo=cuaderno_demostracion",
+      "axiomas_citados": [
+        "string · ej. 'P1', 'Trichotomy'"
+      ]
+    },
+    "verificacion_codigo": {
+      "lenguaje": "enum · c++23 | python3.12",
+      "codigo": "string · verifica casos, NO demuestra — OBLIGATORIO en tipo=laboratorio_codigo",
+      "nota": "string · fija: 'Esto verifica un caso, no demuestra para todos'"
+    },
+    "fase_3_examen": {
+      "pregunta_socratica": "string · pregunta que exige propuesta del estudiante",
+      "respuesta_esperada": "string · referencia de corrección"
+    }
+  },
+  "failure": {
+    "codigo": "enum · RAW_VACIO | FRONTMATTER_INVALIDO | FASE_FALTANTE | FUERA_DE_DOMINIO | CICLO_AGOTADO | OTRO",
+    "mensaje": "string · causa concreta, sin narrativa"
+  },
+  "reglas": [
+    "meta.intento: entero 1..3 (Ciclo Controlado). intento>3 -> RECHAZADO con CICLO_AGOTADO: parada estricta, intervención humana",
+    "meta.rama (opcional): rama wiki_* de destino si difiere de materia; meta.subcarpeta (opcional): subcarpeta dentro de la rama (ej. mathematics/calculus)",
+    "meta.materia y meta.tipo OBLIGATORIOS; tipo enum: concepto|cuaderno_demostracion|laboratorio_codigo|log_sistema",
+    "meta.fase_spivak enum: 1_intuicion|2_demostracion|3_examen_socratico",
+    "meta.anio_semestre formato 'y{anio}/s{sem}' — se inyecta también como tag carrera/yX/sX",
+    "tags_previos se FUSIONAN (nunca se sobrescriben) con carrera/yX/sX y materia/{slug}",
+    "todo campo output string: no vacío, <2000 chars; sin duplicar el contenido del documento fuente",
+    "prohibido: markdown crudo del RAW pegado en output, listas no solicitadas, texto libre en campos enum"
+  ],
+  "ejemplo_minimo": {
+    "meta": {
+      "materia": "Calculo_I_Diferencial",
+      "tipo": "concepto",
+      "fase_spivak": "1_intuicion",
+      "anio_semestre": "y1/s1",
+      "tags_previos": [
+        "matematica/calculo",
+        "y1/s1"
+      ],
+      "intento": 1
+    },
+    "output": {
+      "title": "Límite de una función",
+      "fase_1_intuicion": {
+        "concepto_central": "Un límite es el valor al que la función se acerca cuando x tiende a un punto.",
+        "analogia": "Una flecha que se acerca al blanco sin tocarlo: cada tiro se acerca más al centro.",
+        "visualizacion": "Curva que se comprime hacia un punto en el plano."
+      },
+      "fase_3_examen": {
+        "pregunta_socratica": "¿Qué falla en la idea 'el límite es el valor de la función en el punto'?",
+        "respuesta_esperada": "Que el límite no exige que la función esté definida en el punto."
+      }
+    }
+  }
+}

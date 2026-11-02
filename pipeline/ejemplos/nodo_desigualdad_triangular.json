@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "materia": "Calculo_I_Diferencial",
+    "rama": "Mathematics",
+    "subcarpeta": "mathematics/calculus",
+    "tipo": "concepto",
+    "fase_spivak": "1_intuicion",
+    "anio_semestre": "y1/s1",
+    "intento": 1,
+    "tags_previos": ["matematica/calculo"]
+  },
+  "output": {
+    "title": "Desigualdad triangular",
+    "fase_1_intuicion": {
+      "concepto_central": "Para todo a,b en R: |a+b| ≤ |a|+|b|. El camino directo nunca es más largo que los desvíos.",
+      "analogia": "Un taxi: ir de A a C pasando por B cuesta |A-B|+|B-C|, nunca menos que ir directo |A-C|.",
+      "visualizacion": "Dos segmentos que forman un triángulo: un lado es siempre más corto que la suma de los otros dos."
+    },
+    "fase_2_demostracion": {
+      "enunciado": "Para todo a,b ∈ R: |a+b| ≤ |a| + |b|.",
+      "prueba_latex": "Como ambos lados son ≥ 0, basta probar (a+b)² ≤ (|a|+|b|)². Por P5: (a+b)² = a² + 2ab + b². Por P10-P12: ab ≤ |ab| = |a||b|, luego (a+b)² ≤ a² + 2|a||b| + b² = (|a|+|b|)². Con P12 y la raíz: |a+b| ≤ |a|+|b|.",
+      "axiomas_citados": ["P5 (distributiva)", "P10 (tricotomía)", "P11 (positivos cerrados)", "P12 (|a| y -|a| ≤ a ≤ |a|)"]
+    },
+    "verificacion_codigo": {
+      "lenguaje": "c++23",
+      "codigo": "#include <print>\n#include <cmath>\n\nint main() {\n    const double casos[][2] = {{3, 4}, {-5, 2}, {-1, -1}, {0, 0}};\n    for (auto [a, b] : casos)\n        std::println(\"|{} + {}| = {} <= {} = |{}| + |{}|\",\n                     a, b, std::abs(a + b), std::abs(a) + std::abs(b), a, b);\n}",
+      "nota": "Esto verifica un caso, no demuestra para todos"
+    },
+    "fase_3_examen": {
+      "pregunta_socratica": "¿Dónde exactamente falla la prueba si reemplazas R por los números complejos y |·| por el módulo?",
+      "respuesta_esperada": "No falla: la desigualdad triangular vale en C. La clave es que |ab| = |a||b| se conserva."
+    }
+  }
+}
